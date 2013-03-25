@@ -18,6 +18,12 @@ namespace Carapace\Core;
  */
 class Log
 {
+	/* Level constants */
+	
+	const LEVEL_INFO    = 0;
+	const LEVEL_WARNING = 1;
+	const LEVEL_ERROR   = 2;
+
 	/**
 	 * @var string
 	 */
@@ -32,6 +38,11 @@ class Log
 	 * @var int
 	 */
 	protected $code;
+
+	/**
+	 * @var int
+	 */
+	protected $level;
 
 	/**
 	 * @var array
@@ -103,6 +114,29 @@ class Log
 	public function setCode($code)
 	{
 	    $this->code = $code;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get level
+	 *
+	 * @return int
+	 */
+	public function getLevel()
+	{
+	    return $this->level;
+	}
+	
+	/**
+	 * Set level
+	 *
+	 * @param  int $level
+	 * @return Log
+	 */
+	public function setLevel($level)
+	{
+	    $this->level = $level;
 	
 	    return $this;
 	}

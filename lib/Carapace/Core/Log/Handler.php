@@ -32,7 +32,8 @@ class Handler
 	 */
 	public function handle(\Carapace\Log $log)
 	{
-		
+		$this->handle->setLog($log);
+		$this->handle->handle();
 	}
 
 	/**

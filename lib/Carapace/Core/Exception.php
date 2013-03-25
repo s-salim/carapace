@@ -12,28 +12,177 @@
 namespace Carapace\Core;
 
 /**
- * Represents an exception within the program
+ * Represents an exception to be displayed
  *
  * @author Soufian Salim <soufi@nsal.im>
  */
 class Exception extends \Exception
 {
-	public static $error_levels = array(
-		1     => E_ERROR,
-		2     => E_WARNING,
-		4     => E_PARSE,
-		8     => E_NOTICE,
-		16    => E_CORE_ERROR,
-		32    => E_CORE_WARNING,
-		64    => E_COMPILE_ERROR,
-		128   => E_COMPILE_WARNING,
-		256   => E_USER_ERROR,
-		512   => E_USER_WARNING,
-		1024  => E_USER_NOTICE,
-		2048  => E_STRICT,
-		4096  => E_RECOVERABLE_ERROR,
-		8192  => E_DEPRECATED,
-		16384 => E_USER_DEPRECATED,
-		32767 => E_ALL,
-	);
+	/**
+	 * @var string
+	 */
+	protected $message;
+	
+	/**
+	 * @var int
+	 */
+	protected $code;
+	
+	/**
+	 * @var string
+	 */
+	protected $file;
+	
+	/**
+	 * @var int
+	 */
+	protected $line;
+	
+	/**
+	 * @var \Exception
+	 */
+	protected $previous;
+	
+	/**
+	 * @var array
+	 */
+	protected $trace = array();
+
+	/**
+	 * Get message
+	 *
+	 * @return string
+	 */
+	public function getMessage()
+	{
+	    return $this->message;
+	}
+	
+	/**
+	 * Set message
+	 *
+	 * @param  string $message
+	 * @return Exception
+	 */
+	public function setMessage($message)
+	{
+	    $this->message = $message;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get code
+	 *
+	 * @return int
+	 */
+	public function getCode()
+	{
+	    return $this->code;
+	}
+	
+	/**
+	 * Set code
+	 *
+	 * @param  int $code
+	 * @return Exception
+	 */
+	public function setCode($code)
+	{
+	    $this->code = $code;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get file
+	 *
+	 * @return string
+	 */
+	public function getFile()
+	{
+	    return $this->file;
+	}
+	
+	/**
+	 * Set file
+	 *
+	 * @param  string $file
+	 * @return Exception
+	 */
+	public function setFile($file)
+	{
+	    $this->file = $file;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get line
+	 *
+	 * @return int
+	 */
+	public function getLine()
+	{
+	    return $this->line;
+	}
+	
+	/**
+	 * Set line
+	 *
+	 * @param  int $line
+	 * @return Exception
+	 */
+	public function setLine($line)
+	{
+	    $this->line = $line;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get previous
+	 *
+	 * @return \Exception
+	 */
+	public function getPrevious()
+	{
+	    return $this->previous;
+	}
+	
+	/**
+	 * Set previous
+	 *
+	 * @param  \Exception $previous
+	 * @return Exception
+	 */
+	public function setPrevious($previous)
+	{
+	    $this->previous = $previous;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get trace
+	 *
+	 * @return array
+	 */
+	public function getTrace()
+	{
+	    return $this->trace;
+	}
+	
+	/**
+	 * Set trace
+	 *
+	 * @param  array $trace
+	 * @return Exception
+	 */
+	public function setTrace($trace)
+	{
+	    $this->trace = $trace;
+	
+	    return $this;
+	}
 }

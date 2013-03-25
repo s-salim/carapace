@@ -147,11 +147,11 @@ class Scanner
 	const REPORT_MOUSE_POSITION  = NCURSES_REPORT_MOUSE_POSITION;
 
 	/**
-	 * Mouse events that will be scanned
-	 * 
-	 * @var array
+	 * Whether mouse events are scanned or not
+	 *
+	 * @var boolean;
 	 */
-	protected $mouse_events = array(self::ALL_MOUSE_EVENTS);
+	protected $mouse_events = true;
 
 	/**
 	 * Characters that end the scan
@@ -197,6 +197,11 @@ class Scanner
 	 */
 	public function mouse(&$x, &$y)
 	{
+		ncurses_getmouse($event);
+
+		$x = $event['x'];
+		$y = $event['y'];
+
 		return $this;
 	}
 
@@ -207,8 +212,31 @@ class Scanner
 	 * @param  array  $codes
 	 * @return Scanner
 	 */
-	public function scan(&$string, &$codes = array())
+	public function scan(&$string = '', &$codes = array())
 	{
+		$time    = time();
+		$counter = 0;
+
+		do {
+			$input = ncurses_getch();
+
+			if (!in_array($input, $this->ignored_chars)
+				&& !in_array($input, $this->return_chars)
+				&& ($mouse_events === true
+					|| $input !== self::KEY_MOUSE)){
+				$codes[] = $input;
+				$string .= chr($input);
+			}
+
+			$counter++;
+		} while (!in_array($input, $this->return_chars)
+			&& (empty($this->max_chars)
+				|| strlen($string) < $this->max_chars)
+			&& (empty($this->max_events)
+				|| $counter < $this->max_events)
+			&& (empty($this->max_time)
+				|| time() - $time < $this->max_time));
+
 		return $this;
 	}
 
@@ -219,15 +247,31 @@ class Scanner
 	 * @param  int    $code
 	 * @return Scanner
 	 */
-	public function get(&$char, &$code = null)
+	public function get(&$char = '', &$code = null)
 	{
+		$time    = time();
+		$counter = 0;
+
+		do {
+			$code = ncurses_getch();
+			$char = chr($code);
+
+			$counter++;
+		} while(!in_array($input, $this->return_chars)
+			&& (empty($this->max_events)
+				|| $counter < $this->max_events)
+			&& (empty($this->max_time)
+				|| time() - $time < $this->max_time)
+			&& ($mouse_events === true
+				|| $input !== self::KEY_MOUSE));
+
 		return $this;
 	}
 
 	/**
 	 * Get mouse_events
 	 *
-	 * @return array
+	 * @return boolean
 	 */
 	public function getMouseEvents()
 	{
@@ -237,38 +281,12 @@ class Scanner
 	/**
 	 * Set mouse_events
 	 *
-	 * @param  array $mouse_events
+	 * @param  boolean $mouse_events
 	 * @return Scanner
 	 */
 	public function setMouseEvents($mouse_events)
 	{
 	    $this->mouse_events = $mouse_events;
-	
-	    return $this;
-	}
-	
-	/**
-	 * Add mouse_event
-	 *
-	 * @param  int $mouse_event
-	 * @return Scanner
-	 */
-	public function addMouseEvent($mouse_event)
-	{
-	    $this->mouse_events[] = $mouse_event;
-	
-	    return $this;
-	}
-	
-	/**
-	 * Remove mouse_event
-	 *
-	 * @param  int $mouse_event
-	 * @return Scanner
-	 */
-	public function removeMouseEvent($mouse_event)
-	{
-	    $this->mouse_events = array_diff($this->attributes, array($mouse_event));
 	
 	    return $this;
 	}

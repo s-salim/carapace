@@ -11,6 +11,8 @@
 
 namespace Carapace\Core;
 
+use \Carapace\Tool\String\Formatter;
+
 /**
  * Provides core script functionalities
  *
@@ -18,6 +20,11 @@ namespace Carapace\Core;
  */
 abstract class ScriptAbstract
 {
+	/**
+	 * @var string
+	 */
+	protected $filename;
+
 	/**
 	 * @var array
 	 */
@@ -49,11 +56,62 @@ abstract class ScriptAbstract
 	protected $selected_frame;
 
 	/**
+	 * Constructor
+	 * Sets exception and error handlers, then starts, runs and stops the script
+	 */
+	final public function __construct()
+	{
+		$this->terminal          = new Terminal();
+		$this->exception_handler = new Exception\Handler();
+		$this->log_handler       = new Log\Handler();
+
+		global $argv;
+
+		$this->filename  = array_shift($argv);
+		$this->arguments = $argv;
+
+		$this->init();
+		$this->start();
+
+		while(true){
+			$this->run();
+		}
+	}
+
+	/**
+	 * Destructor
+	 * Restores exception and error handlers, ends ncurses
+	 */
+	final public function __destruct() 
+	{
+		restore_exception_handler();
+		restore_error_handler();
+
+		if ($this->initialized){
+			ncurses_echo();
+			ncurses_end();
+		}
+	}
+
+	/**
 	 * Starts the script
 	 */
 	public function start()
 	{
+		// Config
+		$this->_configure();
 
+		// Ncurses initialization
+		ncurses_init();
+
+		$this->initialized = true;
+
+		// Apply terminal settings
+		$this->terminal->apply();
+
+		// Handlers
+		set_error_handler($this->exception_handler, 'handleError');
+		set_exception_handler($this->exception_handler, 'handleException');
 	}
 
 	/**
@@ -61,7 +119,47 @@ abstract class ScriptAbstract
 	 */
 	public function stop()
 	{
+		$this->__destruct();
+	}
 
+	/**
+	 * Configures the script
+	 */
+	protected function configure($configuration)
+	{
+		// If $configuration is a string, checks for an ini file
+		if (is_string($configuration) && file_exists($configuration)){
+			$configuration = parse_ini_file($configuration, true);
+		}
+
+		if (!is_array($configuration)){
+			return;
+		}
+
+		// Sets the script's objects with the given property values
+		foreach ($configuration as $target => $params){
+			foreach ($params as $property => $value){
+				if (property_exists('ScriptAbstract', $target)){
+					if (property_exists(get_class($this->$target), $property)){
+						$setter = 'set' . Formatter::toCamelCase($property);
+						$this->$target->$setter($value);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Refreshes the screens
+	 * 
+	 * @return ScriptAbstract
+	 */
+	final public function refresh()
+	{
+		ncurses_update_panels();
+		ncurses_doupdate();
+
+		return $this;
 	}
 
 	/**
@@ -72,6 +170,12 @@ abstract class ScriptAbstract
 	 */
 	public function select(GUI\Frame $frame)
 	{
+		if (isset($this->selected_frame)) $this->selected_frame->hide();
+
+		$frame->show();
+
+		$this->selected_frame = $frame;
+
 		return $this;
 	}
 
@@ -148,7 +252,7 @@ abstract class ScriptAbstract
 	 * Set initialized
 	 *
 	 * @param  boolean $initialized
-	 * @return Script
+	 * @return ScriptAbstract
 	 */
 	public function setInitialized($initialized)
 	{
@@ -160,7 +264,7 @@ abstract class ScriptAbstract
 	/**
 	 * Get terminal
 	 *
-	 * @return Shell\Terminal
+	 * @return ScriptAbstract
 	 */
 	public function getTerminal()
 	{
@@ -171,7 +275,7 @@ abstract class ScriptAbstract
 	 * Set terminal
 	 *
 	 * @param  Shell\Terminal $terminal
-	 * @return Shell\Terminal
+	 * @return ScriptAbstract
 	 */
 	public function setTerminal($terminal)
 	{
@@ -194,7 +298,7 @@ abstract class ScriptAbstract
 	 * Set exception_handler
 	 *
 	 * @param  Exception\Handler $exception_handler
-	 * @return Script
+	 * @return ScriptAbstract
 	 */
 	public function setExceptionHandler($exception_handler)
 	{
@@ -217,7 +321,7 @@ abstract class ScriptAbstract
 	 * Set log_handler
 	 *
 	 * @param  Log\Handler $log_handler
-	 * @return Script
+	 * @return ScriptAbstract
 	 */
 	public function setLogHandler(Log\Handler $log_handler)
 	{

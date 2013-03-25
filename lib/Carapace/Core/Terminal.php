@@ -23,14 +23,14 @@ class Terminal
 	 * 
 	 * @var boolean
 	 */
-	protected $echo   = false;
+	protected $echo = false;
 	
 	/**
 	 * Control char capture (ctrl+c, ctrl+z...)
 	 * 
 	 * @var boolean
 	 */
-	protected $raw    = false;
+	protected $raw = false;
 	
 	/**
 	 * Function key capture (arrow keys, F1, F2...)
@@ -51,14 +51,24 @@ class Terminal
 	 * 
 	 * @var boolean
 	 */
-	protected $color  = true;
+	protected $color = true;
 
 	/**
 	 * Applies terminal settings
+	 * 
+	 * @return Terminal
 	 */
 	public function apply()
 	{
+		$this->echo   ? ncurses_echo()      : ncurses_noecho();
+		$this->raw    ? ncurses_raw()       : ncurses_cbreak();
+		$this->cursor ? ncurses_curs_set(1) : ncurses_curs_set(0);
+
+		if ($this->color) ncurses_start_color();
 		
+		ncurses_keypad(STDSCR, $this->keypad);
+
+		return $this;
 	}
 
 	/**
@@ -68,6 +78,8 @@ class Terminal
 	 */
 	public function flash()
 	{
+		ncurses_flash();
+
 		return $this;
 	}
 
@@ -78,7 +90,7 @@ class Terminal
 	 */
 	public function hasColors()
 	{
-		return $this;
+		return ncurses_has_colors();
 	}
 
 	/**
