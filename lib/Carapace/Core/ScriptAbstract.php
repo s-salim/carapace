@@ -125,7 +125,7 @@ abstract class ScriptAbstract
 	/**
 	 * Configures the script
 	 */
-	protected function configure($configuration)
+	public function configure($configuration)
 	{
 		// If $configuration is a string, checks for an ini file
 		if (is_string($configuration) && file_exists($configuration)){
