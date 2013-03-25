@@ -30,4 +30,27 @@ class Screen implements \Carapace\Core\Exception\HandleInterface
 	{
 
 	}
+
+	/**
+	 * Get exception
+	 *
+	 * @return \Carapace\Core\Exception
+	 */
+	public function getException()
+	{
+	    return $this->exception;
+	}
+	
+	/**
+	 * Set exception
+	 *
+	 * @param  \Carapace\Core\Exception $exception
+	 * @return Screen
+	 */
+	public function setException($exception)
+	{
+	    $this->exception = $exception;
+	
+	    return $this;
+	}
 }

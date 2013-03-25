@@ -12,7 +12,7 @@
 namespace Carapace\Collection\Log\Handle;
 
 /**
- * 
+ * Logs in Json format
  *
  * @author Soufian Salim <soufi@nsal.im>
  */
@@ -29,5 +29,28 @@ class Json implements \Carapace\Core\Log\HandleInterface
 	public function handle()
 	{
 		
+	}
+
+	/**
+	 * Get log
+	 *
+	 * @return \Carapace\Core\Log
+	 */
+	public function getLog()
+	{
+	    return $this->log;
+	}
+	
+	/**
+	 * Set log
+	 *
+	 * @param  \Carapace\Core\Log $log
+	 * @return Json
+	 */
+	public function setLog($log)
+	{
+	    $this->log = $log;
+	
+	    return $this;
 	}
 }

@@ -24,4 +24,27 @@ abstract class ScreenAbstract extends \Carapace\Core\GUI\Frame
 	 * @var \Carapace\Core\Exception
 	 */
 	protected $exception;
+
+	/**
+	 * Get exception
+	 *
+	 * @return \Carapace\Core\Exception
+	 */
+	public function getException()
+	{
+	    return $this->exception;
+	}
+	
+	/**
+	 * Set exception
+	 *
+	 * @param  \Carapace\Core\Exception $exception
+	 * @return ScreenAbstract
+	 */
+	public function setException($exception)
+	{
+	    $this->exception = $exception;
+	
+	    return $this;
+	}
 }

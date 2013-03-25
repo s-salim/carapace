@@ -32,6 +32,29 @@ class Handler
 	 */
 	public function handle(\Carapace\Log $log)
 	{
+		
+	}
 
+	/**
+	 * Get handle
+	 *
+	 * @return HandleInterface
+	 */
+	public function getHandle()
+	{
+	    return $this->handle;
+	}
+	
+	/**
+	 * Set handle
+	 *
+	 * @param  HandleInterface $handle
+	 * @return Handler
+	 */
+	public function setHandle($handle)
+	{
+	    $this->handle = $handle;
+	
+	    return $this;
 	}
 }

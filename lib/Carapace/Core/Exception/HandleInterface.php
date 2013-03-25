@@ -28,5 +28,5 @@ interface HandleInterface
 	/**
 	 * Handles the exception
 	 */
-	abstract public function handle();
+	public function handle();
 }

@@ -60,4 +60,139 @@ class Terminal
 	{
 		
 	}
+
+	/**
+	 * Flashes the terminal
+	 * 
+	 * @return Terminal
+	 */
+	public function flash()
+	{
+		return $this;
+	}
+
+	/**
+	 * Checks for color support
+	 * 
+	 * @return boolean
+	 */
+	public function hasColors()
+	{
+		return $this;
+	}
+
+	/**
+	 * Get echo
+	 *
+	 * @return boolean
+	 */
+	public function getEcho()
+	{
+	    return $this->echo;
+	}
+	
+	/**
+	 * Set echo
+	 *
+	 * @param  boolean $echo
+	 * @return Terminal
+	 */
+	public function setEcho($echo)
+	{
+	    $this->echo = $echo;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get raw
+	 *
+	 * @return boolean
+	 */
+	public function getRaw()
+	{
+	    return $this->raw;
+	}
+	
+	/**
+	 * Set raw
+	 *
+	 * @param  boolean $raw
+	 * @return Terminal
+	 */
+	public function setRaw($raw)
+	{
+	    $this->raw = $raw;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get keypad
+	 *
+	 * @return boolean
+	 */
+	public function getKeypad()
+	{
+	    return $this->keypad;
+	}
+	
+	/**
+	 * Set keypad
+	 *
+	 * @param  boolean $keypad
+	 * @return Terminal
+	 */
+	public function setKeypad($keypad)
+	{
+	    $this->keypad = $keypad;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get cursor
+	 *
+	 * @return boolean
+	 */
+	public function getCursor()
+	{
+	    return $this->cursor;
+	}
+	
+	/**
+	 * Set cursor
+	 *
+	 * @param  boolean $cursor
+	 * @return Terminal
+	 */
+	public function setCursor($cursor)
+	{
+	    $this->cursor = $cursor;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get color
+	 *
+	 * @return boolean
+	 */
+	public function getColor()
+	{
+	    return $this->color;
+	}
+	
+	/**
+	 * Set color
+	 *
+	 * @param  boolean $color
+	 * @return Terminal
+	 */
+	public function setColor($color)
+	{
+	    $this->color = $color;
+	
+	    return $this;
+	}
 }

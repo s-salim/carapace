@@ -12,7 +12,7 @@
 namespace Carapace\Collection\Log\Handle;
 
 /**
- * 
+ * Logs in text format
  *
  * @author Soufian Salim <soufi@nsal.im>
  */
@@ -29,5 +29,28 @@ class Text implements \Carapace\Core\Log\HandleInterface
 	public function handle()
 	{
 		
+	}
+
+	/**
+	 * Get log
+	 *
+	 * @return \Carapace\Core\Log
+	 */
+	public function getLog()
+	{
+	    return $this->log;
+	}
+	
+	/**
+	 * Set log
+	 *
+	 * @param  \Carapace\Core\Log $log
+	 * @return Text
+	 */
+	public function setLog($log)
+	{
+	    $this->log = $log;
+	
+	    return $this;
 	}
 }

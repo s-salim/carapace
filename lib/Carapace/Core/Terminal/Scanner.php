@@ -18,9 +18,7 @@ namespace Carapace\Core\Terminal;
  */
 class Scanner
 {
-	/**
-	 * Keyboard constants
-	 */
+	/* Keyboard constants */
 	
 	const KEY_F1        = NCURSES_KEY_F1;
 	const KEY_F2        = NCURSES_KEY_F2;
@@ -120,9 +118,7 @@ class Scanner
 	const KEY_UNDO      = NCURSES_KEY_UNDO;
 	const KEY_MOUSE     = NCURSES_KEY_MOUSE;
 
-	/**
-	 * Mouse constants
-	 */
+	/* Mouse constants */
 
 	const MOUSE_1_RELEASED       = NCURSES_BUTTON1_RELEASED;
 	const MOUSE_2_RELEASED       = NCURSES_BUTTON2_RELEASED;
@@ -197,31 +193,250 @@ class Scanner
 	 * 
 	 * @param  int $x
 	 * @param  int $y
+	 * @return Scanner
 	 */
 	public function mouse(&$x, &$y)
 	{
-
+		return $this;
 	}
 
 	/**
 	 * Scans and returns input
 	 *
-	 * @param string $string
-	 * @param array  $codes
+	 * @param  string $string
+	 * @param  array  $codes
+	 * @return Scanner
 	 */
 	public function scan(&$string, &$codes = array())
 	{
-
+		return $this;
 	}
 
 	/**
 	 * Scans and returns the next valid input
 	 *
-	 * @param string $char
-	 * @param int    $code
+	 * @param  string $char
+	 * @param  int    $code
+	 * @return Scanner
 	 */
 	public function get(&$char, &$code = null)
 	{
+		return $this;
+	}
 
+	/**
+	 * Get mouse_events
+	 *
+	 * @return array
+	 */
+	public function getMouseEvents()
+	{
+	    return $this->mouse_events;
+	}
+	
+	/**
+	 * Set mouse_events
+	 *
+	 * @param  array $mouse_events
+	 * @return Scanner
+	 */
+	public function setMouseEvents($mouse_events)
+	{
+	    $this->mouse_events = $mouse_events;
+	
+	    return $this;
+	}
+	
+	/**
+	 * Add mouse_event
+	 *
+	 * @param  int $mouse_event
+	 * @return Scanner
+	 */
+	public function addMouseEvent($mouse_event)
+	{
+	    $this->mouse_events[] = $mouse_event;
+	
+	    return $this;
+	}
+	
+	/**
+	 * Remove mouse_event
+	 *
+	 * @param  int $mouse_event
+	 * @return Scanner
+	 */
+	public function removeMouseEvent($mouse_event)
+	{
+	    $this->mouse_events = array_diff($this->attributes, array($mouse_event));
+	
+	    return $this;
+	}
+
+	/**
+	 * Get return_chars
+	 *
+	 * @return array
+	 */
+	public function getReturnChars()
+	{
+	    return $this->return_chars;
+	}
+	
+	/**
+	 * Set return_chars
+	 *
+	 * @param  array $return_chars
+	 * @return Scanner
+	 */
+	public function setReturnChars($return_chars)
+	{
+	    $this->return_chars = $return_chars;
+	
+	    return $this;
+	}
+	
+	/**
+	 * Add return_char
+	 *
+	 * @param  int $return_char
+	 * @return Scanner
+	 */
+	public function addReturnChar($return_char)
+	{
+	    $this->return_chars[] = $return_char;
+	
+	    return $this;
+	}
+	
+	/**
+	 * Remove return_char
+	 *
+	 * @param  int $return_char
+	 * @return Scanner
+	 */
+	public function removeReturnChar($return_char)
+	{
+	    $this->return_chars = array_diff($this->return_chars, array($return_char));
+	
+	    return $this;
+	}
+
+	/**
+	 * Get ignored_chars
+	 *
+	 * @return array
+	 */
+	public function getIgnoredChars()
+	{
+	    return $this->ignored_chars;
+	}
+	
+	/**
+	 * Set ignored_chars
+	 *
+	 * @param  array $ignored_chars
+	 * @return Scanner
+	 */
+	public function setIgnoredChars($ignored_chars)
+	{
+	    $this->ignored_chars = $ignored_chars;
+	
+	    return $this;
+	}
+	
+	/**
+	 * Add ignored_char
+	 *
+	 * @param  int $ignored_char
+	 * @return Scanner
+	 */
+	public function addIgnoredChar($ignored_char)
+	{
+	    $this->ignored_chars[] = $ignored_char;
+	
+	    return $this;
+	}
+	
+	/**
+	 * Remove ignored_char
+	 *
+	 * @param  int $ignored_char
+	 * @return Scanner
+	 */
+	public function removeIgnoredChar($ignored_char)
+	{
+	    $this->ignored_chars = array_diff($this->ignored_chars, array($ignored_char));
+	
+	    return $this;
+	}
+
+	/**
+	 * Get max_events
+	 *
+	 * @return array
+	 */
+	public function getMaxEvents()
+	{
+	    return $this->max_events;
+	}
+	
+	/**
+	 * Set max_events
+	 *
+	 * @param  array $max_events
+	 * @return Scanner
+	 */
+	public function setMaxEvents($max_events)
+	{
+	    $this->max_events = $max_events;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get max_chars
+	 *
+	 * @return array
+	 */
+	public function getMaxChars()
+	{
+	    return $this->max_chars;
+	}
+	
+	/**
+	 * Set max_chars
+	 *
+	 * @param  array $max_chars
+	 * @return Scanner
+	 */
+	public function setMaxChars($max_chars)
+	{
+	    $this->max_chars = $max_chars;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get max_time
+	 *
+	 * @return array
+	 */
+	public function getMaxTime()
+	{
+	    return $this->max_time;
+	}
+	
+	/**
+	 * Set max_time
+	 *
+	 * @param  array $max_time
+	 * @return Scanner
+	 */
+	public function setMaxTime($max_time)
+	{
+	    $this->max_time = $max_time;
+	
+	    return $this;
 	}
 }
