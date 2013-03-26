@@ -222,14 +222,15 @@ class Scanner
 
 			if (!in_array($input, $this->ignored_chars)
 				&& !in_array($input, $this->return_chars)
-				&& ($mouse_events === true
+				&& ($this->mouse_events === true
 					|| $input !== self::KEY_MOUSE)){
 				$codes[] = $input;
 				$string .= chr($input);
 			}
 
 			$counter++;
-		} while (!in_array($input, $this->return_chars)
+		} while ((!empty($this->return_chars)
+				&& !in_array($code, $this->return_chars))
 			&& (empty($this->max_chars)
 				|| strlen($string) < $this->max_chars)
 			&& (empty($this->max_events)
@@ -243,11 +244,11 @@ class Scanner
 	/**
 	 * Scans and returns the next valid input
 	 *
-	 * @param  string $char
 	 * @param  int    $code
+	 * @param  string $char
 	 * @return Scanner
 	 */
-	public function get(&$char = '', &$code = null)
+	public function get(&$code = '', &$char = null)
 	{
 		$time    = time();
 		$counter = 0;
@@ -257,13 +258,14 @@ class Scanner
 			$char = chr($code);
 
 			$counter++;
-		} while(!in_array($input, $this->return_chars)
+		} while((!empty($this->return_chars)
+				&& !in_array($code, $this->return_chars))
 			&& (empty($this->max_events)
 				|| $counter < $this->max_events)
 			&& (empty($this->max_time)
 				|| time() - $time < $this->max_time)
-			&& ($mouse_events === true
-				|| $input !== self::KEY_MOUSE));
+			&& ($this->mouse_events === true
+				|| $code !== self::KEY_MOUSE));
 
 		return $this;
 	}
@@ -307,7 +309,7 @@ class Scanner
 	 * @param  array $return_chars
 	 * @return Scanner
 	 */
-	public function setReturnChars($return_chars)
+	public function setReturnChars(array $return_chars)
 	{
 	    $this->return_chars = $return_chars;
 	
@@ -356,7 +358,7 @@ class Scanner
 	 * @param  array $ignored_chars
 	 * @return Scanner
 	 */
-	public function setIgnoredChars($ignored_chars)
+	public function setIgnoredChars(array $ignored_chars)
 	{
 	    $this->ignored_chars = $ignored_chars;
 	

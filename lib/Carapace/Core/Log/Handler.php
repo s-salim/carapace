@@ -11,6 +11,8 @@
 
 namespace Carapace\Core\Log;
 
+use \Carapace\Core\Log;
+
 /**
  * Handle logging requests
  *
@@ -18,6 +20,12 @@ namespace Carapace\Core\Log;
  */
 class Handler
 {
+	public static $channels = array(
+		Log::LEVEL_INFO    => 'info',
+		Log::LEVEL_WARNING => 'warning',
+		Log::LEVEL_ERROR   => 'error',
+	);
+
 	/**
 	 * The handle
 	 * 
@@ -30,8 +38,12 @@ class Handler
 	 * 
 	 * @param \Carapace\Log $log
 	 */
-	public function handle(\Carapace\Log $log)
+	public function handle(\Carapace\Core\Log $log)
 	{
+		new Log('EXCEPTION_HANDLE_SCREEN', 1001, Log::LEVEL_INFO, array());
+
+		if (empty($this->handle)) return;
+		
 		$this->handle->setLog($log);
 		$this->handle->handle();
 	}
@@ -52,7 +64,7 @@ class Handler
 	 * @param  HandleInterface $handle
 	 * @return Handler
 	 */
-	public function setHandle($handle)
+	public function setHandle(HandleInterface $handle)
 	{
 	    $this->handle = $handle;
 	

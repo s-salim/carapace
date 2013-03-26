@@ -11,12 +11,22 @@
 
 namespace Carapace\Collection\Exception\Screen;
 
+use \Carapace\Core\Exception\ScreenAbstract;
+use \Carapace\Core\Cursor;
+
 /**
  * Simple screen for exception display
  *
  * @author Soufian Salim <soufi@nsal.im>
  */
-class Simple extends \Carapace\Core\Exception\ScreenAbstract
+class Simple extends ScreenAbstract
 {
-	
+	/**
+	 * {@inheritDoc}
+	 */
+	public function init()
+	{
+		$cursor = new Cursor($this);
+		$cursor->write('EXCEPTION  SCREEN');
+	}
 }

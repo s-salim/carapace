@@ -16,7 +16,7 @@ namespace Carapace\Core;
  *
  * @author Soufian Salim <soufi@nsal.im>
  */
-class Exception extends \Exception
+class Exception
 {
 	/**
 	 * @var string
@@ -179,7 +179,7 @@ class Exception extends \Exception
 	 * @param  array $trace
 	 * @return Exception
 	 */
-	public function setTrace($trace)
+	public function setTrace(array $trace)
 	{
 	    $this->trace = $trace;
 	

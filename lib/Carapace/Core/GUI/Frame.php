@@ -11,6 +11,9 @@
 
 namespace Carapace\Core\GUI;
 
+use Frame\Panel;
+use \Carapace\Core\Terminal\Scanner;
+
 /**
  * The basic element container
  *
@@ -34,7 +37,7 @@ class Frame
 	protected $frames = array();
 	
 	/**
-	 * @var \Carapace\Terminal\Scanner
+	 * @var \Carapace\Core\Terminal\Scanner
 	 */
 	protected $scanner;
 	
@@ -89,6 +92,20 @@ class Frame
 	protected $border_bottom_right = 0;
 
 	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->ncurses_window = ncurses_newwin(0, 0, 0, 0);
+		$this->ncurses_panel  = ncurses_new_panel($this->ncurses_window);
+		
+		$this->scanner = new Scanner();
+
+		$this->hide();
+		$this->bottom();
+	}
+
+	/**
 	 * Borders the frame
 	 * 	
 	 * @param  boolean $top
@@ -103,7 +120,50 @@ class Frame
 	 */
 	public function border($top = null, $bottom = null, $left = null, $right = null, $top_left = null, $top_right = null, $bottom_left = null, $bottom_right = null)
 	{
+		if (!is_null($top))          $this->setTop($top);
+		if (!is_null($bottom))       $this->setBottom($bottom);
+		if (!is_null($left))         $this->setLeft($left);
+		if (!is_null($right))        $this->setRight($right);
+		if (!is_null($top_left))     $this->setTopLeft($top_left);
+		if (!is_null($top_right))    $this->setTopRight($top_right);
+		if (!is_null($bottom_left))  $this->setBottomLeft($bottom_left);
+		if (!is_null($bottom_right)) $this->setBottomRight($bottom_right);
 
+		$this->bordered = true;
+
+		if ($this instanceof Panel){
+			call_user_func_array('ncurses_wborder', array_merge(array($this->ncurses_window), $this->_getBorders()));
+		} else {
+			call_user_func_array('ncurses_border', $this->_getBorders());
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Returns all borders as an array
+	 * 
+	 * @return array
+	 */
+	private function _getBorders()
+	{
+		$borders = array();
+
+		$borders[] = $this->border_top;
+		$borders[] = $this->border_bottom;
+		$borders[] = $this->border_left;
+		$borders[] = $this->border_right;
+		$borders[] = $this->border_top_left;
+		$borders[] = $this->border_top_right;
+		$borders[] = $this->border_bottom_left;
+		$borders[] = $this->border_bottom_right;
+
+		// Turns string border values into ASCII
+		array_walk($borders, function(&$value){
+			if (is_string($value)) $value = ord($value);
+		});
+
+		return $borders;
 	}
 
 	/**
@@ -113,7 +173,13 @@ class Frame
 	 */
 	public function clear()
 	{
+		ncurses_wclear($this->ncurses_window);
 
+		foreach ($this->frames as $frame){
+			$frame->clear();
+		}
+
+		return $this;
 	}
 
 	/**
@@ -123,7 +189,15 @@ class Frame
 	 */
 	public function show()
 	{
+		ncurses_show_panel($this->ncurses_panel);
 
+		foreach ($this->frames as $frame){
+			$frame->show();
+		}
+
+		$this->visible = true;
+
+		return $this;
 	}
 
 	/**
@@ -133,7 +207,15 @@ class Frame
 	 */
 	public function hide()
 	{
+		ncurses_hide_panel($this->ncurses_panel);
 
+		foreach ($this->frames as $frame){
+			$frame->hide();
+		}
+
+		$this->visible = false;
+
+		return $this;
 	}
 
 	/**
@@ -143,7 +225,9 @@ class Frame
 	 */
 	public function top()
 	{
+		ncurses_top_panel($this->ncurses_panel);
 
+		return $this;
 	}
 
 	/**
@@ -153,7 +237,9 @@ class Frame
 	 */
 	public function bottom()
 	{
+		ncurses_bottom_panel($this->ncurses_panel);
 
+		return $this;
 	}
 
 	/**
@@ -172,7 +258,7 @@ class Frame
 	 * @param  resource $ncurses_window
 	 * @return Frame
 	 */
-	public function setNcursesWindow($ncurses_window)
+	public function setNcursesWindow(resource $ncurses_window)
 	{
 	    $this->ncurses_window = $ncurses_window;
 	

@@ -11,6 +11,10 @@
 
 namespace Carapace\Core\Exception;
 
+use \Carapace\Core\ScriptAbstract as Script;
+use \Carapace\Core\Exception;
+use \Carapace\Core\Log;
+
 /**
  * Handle exceptions
  *
@@ -45,23 +49,52 @@ class Handler
 	protected $handle;
 
 	/**
+	 * @var callable
+	 */
+	protected $previous_exception_handler;
+	
+	/**
+	 * @var callable
+	 */
+	protected $previous_error_handler;
+
+	/**
 	 * Sets the handle exception and calls its handle function, from an exception
 	 * 
-	 * @param \Exception $exception
+	 * @param $exception
 	 */
-	public function handleException(\Exception $exception)
+	public function handleException($exception)
 	{
-		if (!$exception instanceof \Carapace\Core\Exception){
-			$exception = new \Carapace\Core\Exception();
-			$exception->setMessage($exception->getMessage())
-					  ->setCode($exception->getCode())
-					  ->setFile($exception->getFile())
-					  ->setLine($exception->getLine())
-					  ->setPrevious($exception->getPrevious())
-					  ->setTrace($exception->getTrace());
+		Script::$instance->stop();
+
+		if (empty($this->handle)){
+			ncurses_echo();
+			ncurses_end();
+			call_user_func_array($this->previous_exception_handler, func_get_args());
 		}
 
-		$this->handle->setException($exception);
+		if (!$exception instanceof Exception){
+			$e = new Exception();
+			$e->setMessage($exception->getMessage())
+			  ->setCode($exception->getCode())
+			  ->setFile($exception->getFile())
+			  ->setLine($exception->getLine())
+			  ->setPrevious($exception->getPrevious())
+			  ->setTrace($exception->getTrace());
+		} else {
+			$e = $exception;
+		}
+
+		new Log('EXCEPTION', 2, Log::LEVEL_ERROR, array(
+			$e->getMessage(),
+			$e->getCode(),
+			$e->getFile(),
+			$e->getLine(),
+			$e->getPrevious(),
+			$e->getTrace(),
+		));
+
+		$this->handle->setException($e);
 		$this->handle->handle();
 	}
 
@@ -75,8 +108,16 @@ class Handler
 	 * @param array  $context
 	 */
 	public function handleError($level, $message, $file = null, $line = null, array $context = null)
-	{		
-		$exception = new \Carapace\Core\Exception();
+	{
+		Script::$instance->stop();
+
+		if (empty($this->handle)){
+			ncurses_echo();
+			ncurses_end();
+			call_user_func_array($this->previous_error_handler, func_get_args());
+		}
+		
+		$exception = new Exception();
 		$exception->setMessage($message)
 				  ->setCode($level)
 				  ->setFile($file)
@@ -105,6 +146,52 @@ class Handler
 	public function setHandle($handle)
 	{
 	    $this->handle = $handle;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get previous_exception_handler
+	 *
+	 * @return callable
+	 */
+	public function getPreviousExceptionHandler()
+	{
+	    return $this->previous_exception_handler;
+	}
+	
+	/**
+	 * Set previous_exception_handler
+	 *
+	 * @param  callable $previous_exception_handler
+	 * @return Handler
+	 */
+	public function setPreviousExceptionHandler($previous_exception_handler)
+	{
+	    $this->previous_exception_handler = $previous_exception_handler;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get previous_error_handler
+	 *
+	 * @return callable
+	 */
+	public function getPreviousErrorHandler()
+	{
+	    return $this->previous_error_handler;
+	}
+	
+	/**
+	 * Set previous_error_handler
+	 *
+	 * @param  callable $previous_error_handler
+	 * @return Handler
+	 */
+	public function setPreviousErrorHandler($previous_error_handler)
+	{
+	    $this->previous_error_handler = $previous_error_handler;
 	
 	    return $this;
 	}

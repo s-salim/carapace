@@ -11,12 +11,14 @@
 
 namespace Carapace\Core\GUI\Frame;
 
+use \Carapace\Core\GUI\Frame;
+
 /**
  * The basic "box" element
  *
  * @author Soufian Salim <soufi@nsal.im>
  */
-class Panel 
+class Panel extends Frame
 {
 	/**
 	 * @var \Carapace\Core\GUI\Frame
@@ -42,6 +44,27 @@ class Panel
 	 * @var int
 	 */
 	protected $col;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param int $width
+	 * @param int $height
+	 * @param int $row
+	 * @param int $col
+	 */
+	public function __construct($width, $height, $row, $col)
+	{
+		$this->row = $row;
+		$this->col = $col;
+
+		$this->ncurses_window = ncurses_newwin($width, $height, $row, $col);
+		$this->ncurses_panel  = ncurses_new_panel($this->ncurses_window);
+
+		ncurses_getmaxyx($this->ncurses_window, $this->height, $this->width);
+		
+		$this->hide();
+	}
 
 	/**
 	 * Resizes the panel

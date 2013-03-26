@@ -11,6 +11,8 @@
 
 namespace Carapace\Core;
 
+use \Carapace\Core\ScriptAbstract as Script;
+
 /**
  * Represents a log entry
  *
@@ -48,6 +50,24 @@ class Log
 	 * @var array
 	 */
 	protected $data;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param int $code
+	 * @param array  $data
+	 * @param string $channel
+	 */
+	public function __construct($label, $code, $level, array $data = array())
+	{
+		$this->setDateTime(new \DateTime())
+			 ->setLabel($label)
+			 ->setCode($code)
+			 ->setLevel($level)
+			 ->setData($data);
+		
+		Script::$instance->getLogHandler()->handle($this);
+	}
 
 	/**
 	 * Get label

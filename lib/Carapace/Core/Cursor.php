@@ -18,6 +18,29 @@ namespace Carapace\Core;
  */
 class Cursor
 {
+	/* Character display constants */
+	
+	const ALT       = NCURSES_A_ALTCHARSET;
+	const BLINK     = NCURSES_A_BLINK;
+	const BOLD      = NCURSES_A_BOLD;
+	const DIM       = NCURSES_A_DIM;
+	const INVISIBLE = NCURSES_A_INVIS;
+	const PROTECT   = NCURSES_A_PROTECT;
+	const REVERSE   = NCURSES_A_REVERSE;
+	const STANDOUT  = NCURSES_A_STANDOUT;
+	const UNDERLINE = NCURSES_A_UNDERLINE;
+
+	/* Color constants */
+	
+	const BLACK   = NCURSES_COLOR_BLACK;
+	const BLUE    = NCURSES_COLOR_BLUE;
+	const GREEN   = NCURSES_COLOR_GREEN;
+	const CYAN    = NCURSES_COLOR_CYAN;
+	const RED     = NCURSES_COLOR_RED;
+	const MAGENTA = NCURSES_COLOR_MAGENTA;
+	const YELLOW  = NCURSES_COLOR_YELLOW;
+	const WHITE   = NCURSES_COLOR_WHITE;
+	
 	/**
 	 * @var GUI\Frame
 	 */
@@ -41,13 +64,13 @@ class Cursor
 	/**
 	 * Constructor
 	 * 
-	 * @param Frame $frame
+	 * @param GUI\Frame $frame
 	 */
-	public function __construct(Frame $frame)
+	public function __construct(GUI\Frame $frame)
 	{
 		$this->frame = $frame;
 
-		ncurses_getyx($this->frame->getResource(), $this->row, $this->col);
+		ncurses_getyx($this->frame->getNcursesWindow(), $this->row, $this->col);
 	}
 
 	/**
@@ -62,8 +85,8 @@ class Cursor
 		$row = is_null($row) ? $this->row : $row;
 		$col = is_null($col) ? $this->col : $col;
 
-		ncurses_wmove($this->window->getResource(), $row, $col);
-		ncurses_getyx($this->window->getResource(), $this->row, $this->col);
+		ncurses_wmove($this->frame->getNcursesWindow(), $row, $col);
+		ncurses_getyx($this->frame->getNcursesWindow(), $this->row, $this->col);
 
 		return $this;
 	}
@@ -84,22 +107,22 @@ class Cursor
 
 		$this->move($row, $col);
 
-		$win = $this->window->getResource();
+		$win = $this->frame->getNcursesWindow();
 
-		if ($this->window->getBordered()){
+		if ($this->frame->getBordered()){
 			foreach (str_split($string) as $char){
 				ncurses_getyx($win, $y, $x);
 
 				if ($x === 0){
 					$x++;
-				} elseif ($x === ($this->window->getWidth() - 1)){
+				} elseif ($x === ($this->frame->getWidth() - 1)){
 					$x = 1; 
 					$y++;
 				}
 
 				if ($y === 0){
 					$y++;
-				} elseif ($y === ($this->window->getHeight() -1)){
+				} elseif ($y === ($this->frame->getHeight() -1)){
 					// TODO : scrollbar
 					break;
 				}
@@ -115,7 +138,7 @@ class Cursor
 			ncurses_attroff($attribute);
 		}
 
-		ncurses_getyx($this->window->getResource(), $this->row, $this->col);
+		ncurses_getyx($this->frame->getNcursesWindow(), $this->row, $this->col);
 
 		return $this;
 	}
@@ -133,10 +156,10 @@ class Cursor
 	/**
 	 * Set frame
 	 *
-	 * @param  Frame $frame
+	 * @param  GUI\Frame $frame
 	 * @return Cursor
 	 */
-	public function setFrame(Frame $frame)
+	public function setFrame(GUI\Frame $frame)
 	{
 	    $this->frame = $frame;
 	
@@ -205,7 +228,7 @@ class Cursor
 	 * @param  Array $attributes
 	 * @return Cursor
 	 */
-	public function setAttributes($attributes)
+	public function setAttributes(array $attributes)
 	{
 	    $this->attributes = $attributes;
 	

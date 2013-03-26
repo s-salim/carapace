@@ -11,12 +11,14 @@
 
 namespace Carapace\Core\Exception;
 
+use \Carapace\Core\GUI\Frame;
+
 /**
  * Defines common features for exception screens
  *
  * @author Soufian Salim <soufi@nsal.im>
  */
-abstract class ScreenAbstract extends \Carapace\Core\GUI\Frame
+abstract class ScreenAbstract extends Frame
 {
 	/**
 	 * The exception to render
@@ -47,4 +49,9 @@ abstract class ScreenAbstract extends \Carapace\Core\GUI\Frame
 	
 	    return $this;
 	}
+
+	/**
+	 * Initializes the screen
+	 */
+	abstract public function init();
 }

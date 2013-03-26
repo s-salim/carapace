@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the CursedScript package.
+ * This file is part of the Carapace package.
  *
  * (c) Soufian Salim <soufi@nsal.im>
  *
@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace CursedScript\Core\Tool\String;
+namespace Carapace\Tool\String;
 
 /**
  * Performs string operations

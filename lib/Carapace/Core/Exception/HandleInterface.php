@@ -19,14 +19,23 @@ namespace Carapace\Core\Exception;
 interface HandleInterface
 {
 	/**
-	 * The exception
-	 * 
-	 * @var \Carapace\Exception
-	 */
-	protected $exception;
-
-	/**
 	 * Handles the exception
 	 */
 	public function handle();
+
+	/**
+	 * Get exception
+	 * 
+	 * @return \Carapace\Core\Exception
+	 */
+	public function getException();
+
+	/**
+	 * Set exception
+	 *
+	 * @param  \Carapace\Core\Exception $exception
+	 * @return HandleInterface
+	 */
+	public function setException(\Carapace\Core\Exception $exception);
+
 }

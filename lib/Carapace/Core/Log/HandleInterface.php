@@ -19,14 +19,22 @@ namespace Carapace\Core\Log;
 interface HandleInterface
 {
 	/**
-	 * The log
-	 * 
-	 * @var \Carapace\Log
-	 */
-	protected $log;
-
-	/**
 	 * Handles the log
 	 */
 	public function handle();
+
+	/**
+	 * Get log
+	 * 
+	 * @return \Carapace\Core\Log
+	 */
+	public function getLog();
+
+	/**
+	 * Set log
+	 *
+	 * @param  \Carapace\Core\Log $log
+	 * @return HandleInterface
+	 */
+	public function setLog(\Carapace\Core\Log $log);
 }

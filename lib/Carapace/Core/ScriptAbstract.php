@@ -12,6 +12,7 @@
 namespace Carapace\Core;
 
 use \Carapace\Tool\String\Formatter;
+use \Carapace\Core\Log;
 
 /**
  * Provides core script functionalities
@@ -21,6 +22,13 @@ use \Carapace\Tool\String\Formatter;
 abstract class ScriptAbstract
 {
 	/**
+	 * Carapace script instance
+	 * 
+	 * @var ScriptAbstract
+	 */
+	public static $instance;
+
+	/**
 	 * @var string
 	 */
 	protected $filename;
@@ -29,11 +37,6 @@ abstract class ScriptAbstract
 	 * @var array
 	 */
 	protected $arguments = array();
-	
-	/**
-	 * @var boolean
-	 */
-	protected $initialized = false;
 	
 	/**
 	 * @var Terminal
@@ -56,11 +59,18 @@ abstract class ScriptAbstract
 	protected $selected_frame;
 
 	/**
+	 * @var boolean
+	 */
+	protected $stop = false;
+
+	/**
 	 * Constructor
 	 * Sets exception and error handlers, then starts, runs and stops the script
 	 */
 	final public function __construct()
 	{
+		self::$instance = $this;
+		
 		$this->terminal          = new Terminal();
 		$this->exception_handler = new Exception\Handler();
 		$this->log_handler       = new Log\Handler();
@@ -70,11 +80,20 @@ abstract class ScriptAbstract
 		$this->filename  = array_shift($argv);
 		$this->arguments = $argv;
 
-		$this->init();
+		ncurses_init();
+
+		$this->prepare();
 		$this->start();
 
-		while(true){
-			$this->run();
+		while($this->stop !== true){
+			if (!empty($this->selected_frame)
+				&& null !== $scanner = $this->selected_frame->getScanner()){
+				$scanner->get($code);
+			} else {
+				$code = null;
+			}
+
+			$this->run($code);
 		}
 	}
 
@@ -84,13 +103,8 @@ abstract class ScriptAbstract
 	 */
 	final public function __destruct() 
 	{
-		restore_exception_handler();
-		restore_error_handler();
-
-		if ($this->initialized){
-			ncurses_echo();
-			ncurses_end();
-		}
+		ncurses_echo();
+		ncurses_end();
 	}
 
 	/**
@@ -98,20 +112,17 @@ abstract class ScriptAbstract
 	 */
 	public function start()
 	{
-		// Config
-		$this->_configure();
-
-		// Ncurses initialization
-		ncurses_init();
-
-		$this->initialized = true;
+		new Log('SCRIPT_START', 100, Log::LEVEL_INFO, array_merge(array($this->filename), $this->arguments));
 
 		// Apply terminal settings
 		$this->terminal->apply();
 
 		// Handlers
-		set_error_handler($this->exception_handler, 'handleError');
-		set_exception_handler($this->exception_handler, 'handleException');
+		$previous_error_handler     = set_error_handler(array($this->exception_handler, 'handleError'));
+		$this->exception_handler->setPreviousErrorHandler($previous_error_handler);
+
+		$previous_exception_handler = set_exception_handler(array($this->exception_handler, 'handleException'));
+		$this->exception_handler->setPreviousExceptionHandler($previous_exception_handler);
 	}
 
 	/**
@@ -119,7 +130,9 @@ abstract class ScriptAbstract
 	 */
 	public function stop()
 	{
-		$this->__destruct();
+		$this->stop = true;
+
+		new Log('SCRIPT_STOP', 200, Log::LEVEL_INFO, array_merge(array($this->filename), $this->arguments));
 	}
 
 	/**
@@ -139,7 +152,7 @@ abstract class ScriptAbstract
 		// Sets the script's objects with the given property values
 		foreach ($configuration as $target => $params){
 			foreach ($params as $property => $value){
-				if (property_exists('ScriptAbstract', $target)){
+				if (property_exists('\Carapace\Core\ScriptAbstract', $target)){
 					if (property_exists(get_class($this->$target), $property)){
 						$setter = 'set' . Formatter::toCamelCase($property);
 						$this->$target->$setter($value);
@@ -176,18 +189,22 @@ abstract class ScriptAbstract
 
 		$this->selected_frame = $frame;
 
+		$this->refresh();
+		
 		return $this;
 	}
 
 	/**
 	 * Custom script initialization
 	 */
-	abstract public function init();
+	abstract public function prepare();
 
 	/**
 	 * Custom script execution
+	 *
+	 * @param int $input
 	 */
-	abstract public function run();
+	abstract public function run($input);
 
 	/**
 	 * Get arguments
@@ -205,7 +222,7 @@ abstract class ScriptAbstract
 	 * @param  array $arguments
 	 * @return ScriptAbstract
 	 */
-	public function setArguments($arguments)
+	public function setArguments(array $arguments)
 	{
 	    $this->arguments = $arguments;
 	
@@ -300,7 +317,7 @@ abstract class ScriptAbstract
 	 * @param  Exception\Handler $exception_handler
 	 * @return ScriptAbstract
 	 */
-	public function setExceptionHandler($exception_handler)
+	public function setExceptionHandler(Exception\Handler $exception_handler)
 	{
 	    $this->exception_handler = $exception_handler;
 	
@@ -346,7 +363,7 @@ abstract class ScriptAbstract
 	 * @param  GUI\Frame $selected_frame
 	 * @return ScriptAbstract
 	 */
-	public function setSelectedFrame($selected_frame)
+	public function setSelectedFrame(GUI\Frame $selected_frame)
 	{
 	    $this->selected_frame = $selected_frame;
 	
