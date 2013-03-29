@@ -75,7 +75,7 @@ class Panel extends Frame
 	 */
 	public function resize($height, $width)
 	{
-
+		// TODO
 	}
 
 	/**
@@ -86,7 +86,7 @@ class Panel extends Frame
 	 */
 	public function move($row, $col)
 	{
-
+		// TODO
 	}
 
 	/**

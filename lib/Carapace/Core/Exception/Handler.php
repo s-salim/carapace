@@ -61,9 +61,9 @@ class Handler
 	/**
 	 * Sets the handle exception and calls its handle function, from an exception
 	 * 
-	 * @param $exception
+	 * @param \Exception $exception
 	 */
-	public function handleException($exception)
+	public function handleException(\Exception $exception)
 	{
 		Script::$instance->stop();
 
@@ -71,31 +71,19 @@ class Handler
 			ncurses_echo();
 			ncurses_end();
 			call_user_func_array($this->previous_exception_handler, func_get_args());
-		}
-
-		if (!$exception instanceof Exception){
-			$e = new Exception();
-			$e->setMessage($exception->getMessage())
-			  ->setCode($exception->getCode())
-			  ->setFile($exception->getFile())
-			  ->setLine($exception->getLine())
-			  ->setPrevious($exception->getPrevious())
-			  ->setTrace($exception->getTrace());
 		} else {
-			$e = $exception;
+			new Log('EXCEPTION', 2, Log::LEVEL_ERROR, array(
+				$exception->getMessage(),
+				$exception->getCode(),
+				$exception->getFile(),
+				$exception->getLine(),
+				$exception->getPrevious(),
+				$exception->getTrace(),
+			));
+
+			$this->handle->setException($exception);
+			$this->handle->handle();
 		}
-
-		new Log('EXCEPTION', 2, Log::LEVEL_ERROR, array(
-			$e->getMessage(),
-			$e->getCode(),
-			$e->getFile(),
-			$e->getLine(),
-			$e->getPrevious(),
-			$e->getTrace(),
-		));
-
-		$this->handle->setException($e);
-		$this->handle->handle();
 	}
 
 	/**
@@ -109,22 +97,13 @@ class Handler
 	 */
 	public function handleError($level, $message, $file = null, $line = null, array $context = null)
 	{
-		Script::$instance->stop();
-
-		if (empty($this->handle)){
+		if (empty($this->handle())){
 			ncurses_echo();
 			ncurses_end();
 			call_user_func_array($this->previous_error_handler, func_get_args());
+		} else {
+			throw new \ErrorException($message, $level, 0, $file, $line);
 		}
-		
-		$exception = new Exception();
-		$exception->setMessage($message)
-				  ->setCode($level)
-				  ->setFile($file)
-				  ->setLine($line)
-				  ->setTrace($context);
-
-		$this->handleException($exception);
 	}
 
 	/**

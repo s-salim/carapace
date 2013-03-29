@@ -248,7 +248,7 @@ class Scanner
 	 * @param  string $char
 	 * @return Scanner
 	 */
-	public function get(&$code = '', &$char = null)
+	public function get(&$code = null, &$char = '')
 	{
 		$time    = time();
 		$counter = 0;

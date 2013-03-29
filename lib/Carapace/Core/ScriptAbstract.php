@@ -112,13 +112,13 @@ abstract class ScriptAbstract
 	 */
 	public function start()
 	{
-		new Log('SCRIPT_START', 100, Log::LEVEL_INFO, array_merge(array($this->filename), $this->arguments));
+		new Log('SCRIPT_START', 100, Log::LEVEL_INFO, array($this->filename, $this->arguments));
 
 		// Apply terminal settings
 		$this->terminal->apply();
 
 		// Handlers
-		$previous_error_handler     = set_error_handler(array($this->exception_handler, 'handleError'));
+		$previous_error_handler = set_error_handler(array($this->exception_handler, 'handleError'));
 		$this->exception_handler->setPreviousErrorHandler($previous_error_handler);
 
 		$previous_exception_handler = set_exception_handler(array($this->exception_handler, 'handleException'));
@@ -137,6 +137,8 @@ abstract class ScriptAbstract
 
 	/**
 	 * Configures the script
+	 *
+	 * @param mixed $configuration
 	 */
 	public function configure($configuration)
 	{

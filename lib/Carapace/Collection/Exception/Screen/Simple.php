@@ -27,6 +27,6 @@ class Simple extends ScreenAbstract
 	public function init()
 	{
 		$cursor = new Cursor($this);
-		$cursor->write('EXCEPTION  SCREEN');
+		$cursor->write('EXCEPTION SCREEN');
 	}
 }

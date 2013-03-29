@@ -40,8 +40,6 @@ class Handler
 	 */
 	public function handle(\Carapace\Core\Log $log)
 	{
-		new Log('EXCEPTION_HANDLE_SCREEN', 1001, Log::LEVEL_INFO, array());
-
 		if (empty($this->handle)) return;
 		
 		$this->handle->setLog($log);
