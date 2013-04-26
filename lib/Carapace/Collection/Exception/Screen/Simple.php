@@ -11,7 +11,7 @@
 
 namespace Carapace\Collection\Exception\Screen;
 
-use \Carapace\Core\Exception\ScreenAbstract;
+use \Carapace\Collection\Exception\Screen\ScreenAbstract;
 use \Carapace\Core\Cursor;
 
 /**
@@ -28,5 +28,7 @@ class Simple extends ScreenAbstract
 	{
 		$cursor = new Cursor($this);
 		$cursor->write('EXCEPTION SCREEN');
+
+		// TODO
 	}
 }

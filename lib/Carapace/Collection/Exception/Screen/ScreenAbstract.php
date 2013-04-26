@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Carapace\Core\Exception;
+namespace Carapace\Collection\Exception\Screen;
 
 use \Carapace\Core\GUI\Frame;
 

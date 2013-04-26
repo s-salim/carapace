@@ -11,7 +11,7 @@
 
 namespace Carapace\Collection\Exception\Handle;
 
-use \Carapace\Core\ScriptAbstract as Script;
+use \Carapace\Collection\Exception\Screen\ScriptAbstract as Script;
 use \Carapace\Core\Exception;
 
 /**
