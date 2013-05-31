@@ -29,9 +29,7 @@ class Explorer
      */
     public static function exploreFile($file_path, $active = false)
     {
-    	Formatter::removeFilename($file_path);
-
-		if (file_exists($file_path) 
+    	if (file_exists($file_path) 
 			or ($active 
 				and ((is_dir($dir_path = Formatter::removeFilename($file_path)) 
 					or mkdir($dir_path))

@@ -16,6 +16,7 @@ use \Carapace\Collection;
 use \Carapace\Core\GUI\Frame;
 use \Carapace\Core\GUI\Frame\Panel;
 use \Carapace\Core\Terminal\Scanner;
+use \Carapace\Core\Cursor;
 
 /**
  * The Example class illustrates some of the Carapace functionalities
@@ -29,6 +30,7 @@ class Example extends Script
 	 */
 	public function prepare()
 	{
+		echo 'test';
 		$this->_configure();
 		$this->_initialize();
 	}
@@ -51,6 +53,16 @@ class Example extends Script
 	private function _initialize()
 	{
 		$screen = new Frame();
+		$screen->border();
+
+		$panel = new Panel(8, 40, 2, 2);
+		$panel->border();
+
+		$cursor = new Cursor($panel);
+		$cursor->write('This is a the main window. Press F1 to quit.');
+
+		$screen->addFrame($panel);
+
 		$this->select($screen);
 	}
 
@@ -59,8 +71,6 @@ class Example extends Script
 	 */
 	public function run($input)
 	{
-		throw new Exception("Error Processing Request", 1);
-		
 		switch ($input) {
 			case Scanner::KEY_F1:
 				$this->stop();

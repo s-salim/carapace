@@ -72,7 +72,7 @@ abstract class ScriptAbstract
 		self::$instance = $this;
 		
 		$this->terminal          = new Terminal();
-		$this->exception_handler = new Exception\Handler();
+		/*$this->exception_handler = new Exception\Handler();*/
 		$this->log_handler       = new Log\Handler();
 
 		global $argv;
@@ -118,11 +118,11 @@ abstract class ScriptAbstract
 		$this->terminal->apply();
 
 		// Handlers
-		$previous_error_handler = set_error_handler(array($this->exception_handler, 'handleError'));
+		/*$previous_error_handler = set_error_handler(array($this->exception_handler, 'handleError'));
 		$this->exception_handler->setPreviousErrorHandler($previous_error_handler);
 
 		$previous_exception_handler = set_exception_handler(array($this->exception_handler, 'handleException'));
-		$this->exception_handler->setPreviousExceptionHandler($previous_exception_handler);
+		$this->exception_handler->setPreviousExceptionHandler($previous_exception_handler);*/
 	}
 
 	/**

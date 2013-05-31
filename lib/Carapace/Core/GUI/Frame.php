@@ -120,16 +120,16 @@ class Frame
 	 */
 	public function border($top = null, $bottom = null, $left = null, $right = null, $top_left = null, $top_right = null, $bottom_left = null, $bottom_right = null)
 	{
-		if (!is_null($top))          $this->setTop($top);
-		if (!is_null($bottom))       $this->setBottom($bottom);
-		if (!is_null($left))         $this->setLeft($left);
-		if (!is_null($right))        $this->setRight($right);
-		if (!is_null($top_left))     $this->setTopLeft($top_left);
-		if (!is_null($top_right))    $this->setTopRight($top_right);
-		if (!is_null($bottom_left))  $this->setBottomLeft($bottom_left);
-		if (!is_null($bottom_right)) $this->setBottomRight($bottom_right);
+		if (!is_null($top))          $this->border_top          = $top;
+		if (!is_null($bottom))       $this->border_bottom       = $bottom;
+		if (!is_null($left))         $this->border_left         = $left;
+		if (!is_null($right))        $this->border_right        = $right;
+		if (!is_null($top_left))     $this->border_top_left     = $top_left;
+		if (!is_null($top_right))    $this->border_top_right    = $top_right;
+		if (!is_null($bottom_left))  $this->border_bottom_left  = $bottom_left;
+		if (!is_null($bottom_right)) $this->border_bottom_right = $bottom_right;
 
-		$this->bordered = true;
+this = $this>bordered = true;
 
 		if ($this instanceof Panel){
 			call_user_func_array('ncurses_wborder', array_merge(array($this->ncurses_window), $this->_getBorders()));

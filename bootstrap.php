@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the CursedScript package.
+ * This file is part of the Carapace package.
  *
  * (c) Soufian Salim <soufi@nsal.im>
  *
