@@ -17,6 +17,7 @@ use \Carapace\Core\GUI\Frame;
 use \Carapace\Core\GUI\Frame\Panel;
 use \Carapace\Core\Terminal\Scanner;
 use \Carapace\Core\Cursor;
+use \Carapace\Core\Listener;
 
 /**
  * The Example class illustrates some of the Carapace functionalities
@@ -30,9 +31,9 @@ class Example extends Script
 	 */
 	public function prepare()
 	{
-		echo 'test';
 		$this->_configure();
-		$this->_initialize();
+		$this->_createGUI();
+		$this->_createListeners();
 	}
 
 	/**
@@ -50,7 +51,7 @@ class Example extends Script
 	/**
 	 * Initializes the GUI
 	 */
-	private function _initialize()
+	private function _createGUI()
 	{
 		$screen = new Frame();
 		$screen->border();
@@ -58,8 +59,11 @@ class Example extends Script
 		$panel = new Panel(8, 40, 2, 2);
 		$panel->border();
 
-		$cursor = new Cursor($panel);
-		$cursor->write('This is a the main window. Press F1 to quit.');
+		$cursor = new Cursor($screen);
+
+		for ($i = 0 ; $i < 50 ; $i++){
+			$cursor->write('This the main window. Press F1 to quit. ');
+		}
 
 		$screen->addFrame($panel);
 
@@ -67,15 +71,13 @@ class Example extends Script
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Create listeners
 	 */
-	public function run($input)
+	private function _createListeners()
 	{
-		switch ($input) {
-			case Scanner::KEY_F1:
-				$this->stop();
-				break;
-		}
+		$listener = new Listener(Scanner::KEY_F1, function() {
+			Script::$instance->stop();
+		});
 	}
 }
 

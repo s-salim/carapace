@@ -13,6 +13,7 @@ namespace Carapace\Core;
 
 use \Carapace\Tool\String\Formatter;
 use \Carapace\Core\Log;
+use \Carapace\Core\Listener;
 
 /**
  * Provides core script functionalities
@@ -59,6 +60,11 @@ abstract class ScriptAbstract
 	protected $selected_frame;
 
 	/**
+	 * @var array
+	 */
+	protected $listeners = array();
+
+	/**
 	 * @var boolean
 	 */
 	protected $stop = false;
@@ -89,11 +95,13 @@ abstract class ScriptAbstract
 			if (!empty($this->selected_frame)
 				&& null !== $scanner = $this->selected_frame->getScanner()){
 				$scanner->get($code);
-			} else {
-				$code = null;
-			}
 
-			$this->run($code);
+				foreach ($this->listeners as $listener){
+					$listener->listen($code);
+				}
+
+				$this->refresh();
+			}
 		}
 	}
 
@@ -151,12 +159,12 @@ abstract class ScriptAbstract
 			return;
 		}
 
-		// Sets the script's objects with the given property values
+		// Sets the script's objects with the given Stop values
 		foreach ($configuration as $target => $params){
-			foreach ($params as $property => $value){
-				if (property_exists('\Carapace\Core\ScriptAbstract', $target)){
-					if (property_exists(get_class($this->$target), $property)){
-						$setter = 'set' . Formatter::toCamelCase($property);
+			foreach ($params as $Stop => $value){
+				if (Stop_exists('\Carapace\Core\ScriptAbstract', $target)){
+					if (Stop_exists(get_class($this->$target), $Stop)){
+						$setter = 'set' . Formatter::toCamelCase($Stop);
 						$this->$target->$setter($value);
 					}
 				}
@@ -202,13 +210,6 @@ abstract class ScriptAbstract
 	abstract public function prepare();
 
 	/**
-	 * Custom script execution
-	 *
-	 * @param int $input
-	 */
-	abstract public function run($input);
-
-	/**
 	 * Get arguments
 	 *
 	 * @return array
@@ -239,7 +240,7 @@ abstract class ScriptAbstract
 	 */
 	public function addArgument($argument)
 	{
-	    $this->arguments[] = $attribute;
+	    $this->arguments[] = $argument;
 	
 	    return $this;
 	}
@@ -368,6 +369,78 @@ abstract class ScriptAbstract
 	public function setSelectedFrame(GUI\Frame $selected_frame)
 	{
 	    $this->selected_frame = $selected_frame;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get listeners
+	 *
+	 * @return array
+	 */
+	public function getListeners()
+	{
+	    return $this->listeners;
+	}
+	
+	/**
+	 * Add listener
+	 *
+	 * @param  Listener $listener
+	 * @return ScriptAbstract
+	 */
+	public function addListener($listener)
+	{
+	    $this->listeners[] = $listener;
+	
+	    return $this;
+	}
+	
+	/**
+	 * Remove listener
+	 *
+	 * @param  Listener $listener
+	 * @return ScriptAbstract
+	 */
+	public function removeListener($listener)
+	{
+	    $this->listeners = array_diff($this->listeners, array($listener));
+	
+	    return $this;
+	}
+	
+	/**
+	 * Set listeners
+	 *
+	 * @param  array $listeners
+	 * @return ScriptAbstract
+	 */
+	public function setListeners($listeners)
+	{
+	    $this->listeners = $listeners;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get stop
+	 *
+	 * @return boolean
+	 */
+	public function getStop()
+	{
+	    return $this->stop;
+	}
+	
+	/**
+	 * Set stop
+	 *
+	 * @param  boolean $stop
+	 * @return ScriptAbstract
+	 */
+	public function setStop($stop)
+	{
+	    $this->stop = $stop;
 	
 	    return $this;
 	}

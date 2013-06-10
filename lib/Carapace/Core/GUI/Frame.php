@@ -47,11 +47,6 @@ class Frame
 	protected $visible = false;
 	
 	/**
-	 * @var boolean
-	 */
-	protected $bordered = false;
-	
-	/**
 	 * @var mixed
 	 */
 	protected $border_top = 0;
@@ -129,13 +124,7 @@ class Frame
 		if (!is_null($bottom_left))  $this->border_bottom_left  = $bottom_left;
 		if (!is_null($bottom_right)) $this->border_bottom_right = $bottom_right;
 
-this = $this>bordered = true;
-
-		if ($this instanceof Panel){
-			call_user_func_array('ncurses_wborder', array_merge(array($this->ncurses_window), $this->_getBorders()));
-		} else {
-			call_user_func_array('ncurses_border', $this->_getBorders());
-		}
+		call_user_func_array('ncurses_wborder', array_merge(array($this->ncurses_window), $this->_getBorders()));
 		
 		return $this;
 	}
@@ -379,29 +368,6 @@ this = $this>bordered = true;
 	public function setVisible($visible)
 	{
 	    $this->visible = $visible;
-	
-	    return $this;
-	}
-
-	/**
-	 * Get bordered
-	 *
-	 * @return boolean
-	 */
-	public function getBordered()
-	{
-	    return $this->bordered;
-	}
-	
-	/**
-	 * Set bordered
-	 *
-	 * @param  boolean $bordered
-	 * @return Frame
-	 */
-	public function setBordered($bordered)
-	{
-	    $this->bordered = $bordered;
 	
 	    return $this;
 	}

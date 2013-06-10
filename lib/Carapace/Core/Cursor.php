@@ -109,29 +109,26 @@ class Cursor
 
 		$win = $this->frame->getNcursesWindow();
 
-		if ($this->frame->getBordered()){
-			foreach (str_split($string) as $char){
-				ncurses_getyx($win, $y, $x);
+		ncurses_getmaxyx($this->frame->getNcursesWindow(), $max_y, $max_x);
+		foreach (str_split($string) as $char){
+			ncurses_getyx($win, $y, $x);
 
-				if ($x === 0){
-					$x++;
-				} elseif ($x === ($this->frame->getWidth() - 1)){
-					$x = 1; 
-					$y++;
-				}
-
-				if ($y === 0){
-					$y++;
-				} elseif ($y === ($this->frame->getHeight() -1)){
-					// TODO : scrollbar
-					break;
-				}
-
-				ncurses_wmove($win, $y, $x);
-				ncurses_waddch($win, ord($char));
+			if ($x === 0){
+				$x++;
+			} elseif ($x === ($max_x - 1)){
+				$x = 1; 
+				$y++;
 			}
-		} else {
-			ncurses_waddstr($win, $string);
+
+			if ($y === 0){
+				$y++;
+			} elseif ($y === ($max_y -1)){
+				// TODO : scrollbar
+				break;
+			}
+
+			ncurses_wmove($win, $y, $x);
+			ncurses_waddch($win, ord($char));
 		}
 
 		foreach ($this->attributes as $attribute){
