@@ -12,7 +12,9 @@
 include_once './../bootstrap.php';
 
 use \Carapace\Core\ScriptAbstract as Script;
+use \Carapace\Collection\Toolkit\ProgressBar;
 use \Carapace\Collection;
+use \Carapace\Core\GUI\Element;
 use \Carapace\Core\GUI\Frame;
 use \Carapace\Core\GUI\Frame\Panel;
 use \Carapace\Core\Terminal\Scanner;
@@ -57,9 +59,12 @@ class Example extends Script
 		$screen->border();
 
 		$panel = new Panel(8, 40, 2, 2);
+
 		$panel->border();
 
 		$cursor = new Cursor($screen);
+
+		$this->register('progress_cursor', new Cursor($panel));
 
 		for ($i = 0 ; $i < 50 ; $i++){
 			$cursor->write('This the main window. Press F1 to quit. ');
@@ -78,6 +83,23 @@ class Example extends Script
 		$listener = new Listener(Scanner::KEY_F1, function() {
 			Script::$instance->stop();
 		});
+
+		$listener = new Listener(Scanner::KEY_F2, function() {
+			Script::$instance->doSomeHardWork();
+		});
+	}
+
+	public function doSomeHardWork()
+	{
+		$length = 10;
+
+		$progress_bar = new ProgressBar($this->get('progress_cursor'), $length);
+
+		for ($position = 0 ; $position < $length ; $position++){
+			sleep(0.5);
+
+			$progress_bar->display($position);
+		}
 	}
 }
 

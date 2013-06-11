@@ -53,7 +53,7 @@ class Panel extends Frame
 	 * @param int $row
 	 * @param int $col
 	 */
-	public function __construct($width, $height, $row, $col)
+	public function __construct($width = null, $height = null, $row = 0, $col = 0)
 	{
 		$this->row = $row;
 		$this->col = $col;

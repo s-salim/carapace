@@ -30,6 +30,11 @@ abstract class ScriptAbstract
 	public static $instance;
 
 	/**
+	 * @var array
+	 */
+	protected $registry = array();
+
+	/**
 	 * @var string
 	 */
 	protected $filename;
@@ -57,7 +62,7 @@ abstract class ScriptAbstract
 	/**
 	 * @var GUI\Frame
 	 */
-	protected $selected_frame;
+	protected $frame;
 
 	/**
 	 * @var array
@@ -92,8 +97,8 @@ abstract class ScriptAbstract
 		$this->start();
 
 		while($this->stop !== true){
-			if (!empty($this->selected_frame)
-				&& null !== $scanner = $this->selected_frame->getScanner()){
+			if (!empty($this->frame)
+				&& null !== $scanner = $this->frame->getScanner()){
 				$scanner->get($code);
 
 				foreach ($this->listeners as $listener){
@@ -193,15 +198,44 @@ abstract class ScriptAbstract
 	 */
 	public function select(GUI\Frame $frame)
 	{
-		if (isset($this->selected_frame)) $this->selected_frame->hide();
+		if (isset($this->frame)) $this->frame->hide();
 
 		$frame->show();
 
-		$this->selected_frame = $frame;
+		$this->frame = $frame;
 
 		$this->refresh();
 		
 		return $this;
+	}
+
+	/**
+	 * Register an element
+	 * 
+	 * @param  string $key
+	 * @param  mixed $element
+	 * @return ScriptAbstract
+	 */
+	public function register($key, $element)
+	{
+		if (!is_string($key)) throw new Exception('Registry keys must be strings');
+
+		if (array_key_exists($key, $this->registry)) throw new Exception('Registry keys must be unique');
+		
+		$this->registry[$key] = $element;
+
+		return $this;
+	}
+
+	/**
+	 * Get an element from the registry
+	 * 
+	 * @param  string $key
+	 * @return mixed
+	 */
+	public function get($key)
+	{
+		return $this->registry[$key];
 	}
 
 	/**
@@ -351,24 +385,24 @@ abstract class ScriptAbstract
 	}
 
 	/**
-	 * Get selected_frame
+	 * Get frame
 	 *
 	 * @return GUI\Frame
 	 */
-	public function getSelectedFrame()
+	public function getFrame()
 	{
-	    return $this->selected_frame;
+	    return $this->frame;
 	}
 	
 	/**
-	 * Set selected_frame
+	 * Set frame
 	 *
-	 * @param  GUI\Frame $selected_frame
+	 * @param  GUI\Frame $frame
 	 * @return ScriptAbstract
 	 */
-	public function setSelectedFrame(GUI\Frame $selected_frame)
+	public function setFrame(GUI\Frame $frame)
 	{
-	    $this->selected_frame = $selected_frame;
+	    $this->frame = $frame;
 	
 	    return $this;
 	}
