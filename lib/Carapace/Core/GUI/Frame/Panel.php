@@ -53,7 +53,7 @@ class Panel extends Frame
 	 * @param int $row
 	 * @param int $col
 	 */
-	public function __construct($width = null, $height = null, $row = 0, $col = 0)
+	public function __construct($width = 0, $height = 0, $row = 0, $col = 0)
 	{
 		$this->row = $row;
 		$this->col = $col;
@@ -86,7 +86,7 @@ class Panel extends Frame
 	 */
 	public function move($row, $col)
 	{
-		// TODO
+		ncurses_move_panel($this->ncurses_panel, $col, $row);
 	}
 
 	/**

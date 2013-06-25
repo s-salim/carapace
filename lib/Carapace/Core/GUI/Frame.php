@@ -45,7 +45,12 @@ class Frame
 	 * @var boolean
 	 */
 	protected $visible = false;
-	
+
+	/**
+	 * @var boolean
+	 */
+	protected $bordered = false;
+
 	/**
 	 * @var mixed
 	 */
@@ -123,6 +128,8 @@ class Frame
 		if (!is_null($top_right))    $this->border_top_right    = $top_right;
 		if (!is_null($bottom_left))  $this->border_bottom_left  = $bottom_left;
 		if (!is_null($bottom_right)) $this->border_bottom_right = $bottom_right;
+
+		$this->bordered = true;
 
 		call_user_func_array('ncurses_wborder', array_merge(array($this->ncurses_window), $this->_getBorders()));
 		
@@ -321,7 +328,7 @@ class Frame
 	 */
 	public function removeFrame($frame)
 	{
-	    $this->frames = array_diff($this->attributes, array($frame));
+	    $this->frames = array_diff($this->frames, array($frame));
 	
 	    return $this;
 	}
@@ -368,6 +375,29 @@ class Frame
 	public function setVisible($visible)
 	{
 	    $this->visible = $visible;
+	
+	    return $this;
+	}
+
+	/**
+	 * Get bordered
+	 *
+	 * @return boolean
+	 */
+	public function getBordered()
+	{
+	    return $this->bordered;
+	}
+	
+	/**
+	 * Set bordered
+	 *
+	 * @param  boolean $bordered
+	 * @return Frame
+	 */
+	public function setBordered($bordered)
+	{
+	    $this->bordered = $bordered;
 	
 	    return $this;
 	}
